@@ -5,58 +5,63 @@ public class LinkedList<T> implements List<T> {
     private Node <T> head;
     private Node <T> tail;
     private int size;
-    LinkedList(){
+    LinkedList() {
         this.head = null;
         this.tail = null;
         this.size = 0;
     }
-    public Node getHead(){
+    public Node<T> getHead() {
         return this.head;
     }
-    public Node getTail(){
+    public Node<T> getTail() {
         return this.tail;
     }
-    public int getSize(){
+    public int getSize() {
         return this.size;
     }
     public void addAtIndex(T data, int index) throws IllegalArgumentException {
-        Node addNode = new Node (data);
+        Node <T> addNode = new Node <T> (data);
         if (data == null) {
             throw new IllegalArgumentException("You cannot add null data to the list");
         }
-        if(index < 0 || index > this.size - 1) {
+        if (index < 0 || (index > this.size && this.size != 0)) {
             throw new IllegalArgumentException("Your index is out of the list bounds");
         }
-        if(this.head == null) {
+        if (this.head == null) {
             this.head = addNode;
+            this.size ++;
+            System.out.println("add to empty list");
         } else {
-            Node currentNode = this.head;
-            Node previousNode = null;
+            Node <T> currentNode = this.head;
+            Node <T> previousNode = null;
             int count = 0;
             while (currentNode != null) {
+                count = count + 1;
                 previousNode = currentNode;
-                currentNode = currentNode.next;
+                currentNode = currentNode.getNodeNext();
                 if (index == count) {
                     if (currentNode == this.head) {
-                        addNode.next = this.head;
+                        System.out.println("add to head");
+                        addNode.setNodeNext(this.head);
                         this.head = addNode;
-                    } if (currentNode == this.tail) {
-                        addNode.next = null;
-                        previousNode.next = addNode;
+                    } else if (currentNode == this.tail) {
+                        System.out.println("add to tail");
+                        addNode.setNodeNext(null);
+                        previousNode.setNodeNext(addNode);
                         this.tail = addNode;
                     } else {
-                        addNode.next = currentNode;
-                        previousNode.next = addNode;
+                        System.out.println("add to middle");
+                        addNode.setNodeNext(currentNode);
+                        previousNode.setNodeNext(addNode);
                     }
                     this.size ++;
-                }
-                count = count + 1;   
+                }   
             }  
         }
     }
-    public T getAtIndex(int index) throws IllegalArgumentException{
-        Node currentNode = this.head;
-        Node previousNode = null;
+    public T getAtIndex(int index) throws IllegalArgumentException {
+        Node <T> currentNode = this.head;
+        Node <T> previousNode = null;
         T returnData = null;
         if (index < 0 || index > this.size - 1) {
             throw new IllegalArgumentException("Your index is out of the list bounds");
@@ -66,6 +71,7 @@ public class LinkedList<T> implements List<T> {
         } else {
             int count = 0;
             while (currentNode != null) {
+                count = count + 1;
                 previousNode = currentNode;
                 currentNode = currentNode.getNodeNext();
                 if (index == count) {
@@ -76,77 +82,83 @@ public class LinkedList<T> implements List<T> {
                     } else {
                         returnData = (T) currentNode.getData();
                     }
-                count = count + 1;
                 }
             }
         }
         return returnData;
     }
-    public T removeAtIndex(int index) throws IllegalArgumentException{
+    public T removeAtIndex(int index) throws IllegalArgumentException {
         T returnData = null;
-        Node currentNode = this.head;
-        Node previousNode = new Node (null, this.head);
+        Node <T> currentNode = this.head;
+        Node <T> previousNode = new Node <T> (null, this.head);
         if (index < 0 || index > this.size - 1) {
             throw new IllegalArgumentException("Your index is out of the list bounds");
         } 
-        if(this.head == null) {
+        if (this.head == null) {
             return null;
         }
         int count = 0;
         while (currentNode != null) {
+            count = count + 1;
             previousNode = currentNode;
-            currentNode = currentNode.next;
+            currentNode = currentNode.getNodeNext();
             if (index == count) {
                 if (currentNode == this.head) {
                     returnData = this.head.getData();
-                    previousNode.next = currentNode.getNodeNext();
+                    previousNode.setNodeNext(currentNode.getNodeNext());
                     this.head = previousNode;
                 } else if (currentNode == this.tail) {
                     returnData = (T) currentNode.getData();
-                    previousNode.next = null;
-                    currentNode.next = null;
+                    previousNode.setNodeNext(null);
+                    currentNode.setNodeNext(null);
                     this.tail = previousNode;
                 } else {
                     returnData = (T) currentNode.getData();
-                    previousNode.next = currentNode.getNodeNext();
-                    currentNode.next = null;
+                    previousNode.setNodeNext(currentNode.getNodeNext());
+                    currentNode.setNodeNext(null);
                 }
                 this.size --;
             }
-            count = count + 1;
         }
         return returnData;
     }
     public T remove (T data) throws IllegalArgumentException, NoSuchElementException {
         T returnData = null;
-        Node currentNode = this.head;
-        Node previousNode = new Node (null, this.head);
+        Node <T> currentNode = this.head;
+        System.out.println("the head is" + this.head.getData());
+        Node <T> previousNode = new Node <T> (null, this.head);
         if (data == null || this.head == null) {
             returnData = data;
             throw new IllegalArgumentException("You cannot remove null data from the list");
         }
         while (currentNode != null) {
+            System.out.println("breakpoint 1");
+            System.out.println(data);
+            System.out.println (data = this.head.getData());
             previousNode = currentNode;
-            currentNode = currentNode.next;
+            currentNode = currentNode.getNodeNext();
             if (currentNode.getData() == data) {
+                System.out.println("match!");
                 returnData = (T) currentNode.getData();
                 if (currentNode == this.head){
-                    previousNode.next = currentNode.getNodeNext();
+                    previousNode.setNodeNext(currentNode.getNodeNext());
                     this.head = previousNode;
                 } else if (currentNode == this.tail) {
-                    previousNode.next = null;
-                    currentNode.next = null;
+                    previousNode.setNodeNext(null);
+                    currentNode.setNodeNext(null);
                     this.tail = previousNode;
                 } else {
-                    previousNode.next = currentNode.getNodeNext();
-                    currentNode.next = null;
+                    System.out.println("remove in the middle");
+                    previousNode.setNodeNext(currentNode.getNodeNext());
+                    currentNode.setNodeNext(null);
                 }
                 this.size --;
+            } else {
+                if (currentNode == this.tail) {
+                    returnData = data;
+                    throw new NoSuchElementException("The data is not present in the list.");
+                } 
             }
-        } 
-        if (currentNode == null) {
-            returnData = data;
-            throw new NoSuchElementException("The data is not present in the list.");  
         }
         return returnData;
     }
@@ -159,5 +171,15 @@ public class LinkedList<T> implements List<T> {
     }
     public int size() {
         return this.size;
+    }
+    public String toString() {
+        String listRepresentation = "";
+        Node <T> currentNode = this.head;
+    
+        while (currentNode != null) {
+            listRepresentation += currentNode.getData() + " ";
+            currentNode = currentNode.getNodeNext();
+        }
+        return listRepresentation;
     }
 }
